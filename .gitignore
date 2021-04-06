@@ -1,0 +1,4 @@
+dist/jhr.app
+
+client/build
+client/node_modules
