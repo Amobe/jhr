@@ -1,3 +1,5 @@
+.DS_Store
+
 dist/jhr.app
 
 client/build
