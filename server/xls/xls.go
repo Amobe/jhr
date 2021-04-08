@@ -48,3 +48,15 @@ func getAttendanceStatus(start, end TimeUnit) (status AttendanceStatus, diff Tim
 	diff = diffTimeUnit(start, end)
 	return GetAttendanceStatus(diff.ToMinutes()), diff
 }
+
+func xlsRowToEmployeeRecord(date, onDuty, offDuty string) EmployeeRecord {
+	onDutyTime, err := NewTimeUnitFromString(onDuty)
+	if err != nil {
+		onDutyTime = NewInvalidTimeUnit()
+	}
+	offDutyTime, err := NewTimeUnitFromString(offDuty)
+	if err != nil {
+		offDutyTime = NewInvalidTimeUnit()
+	}
+	return NewEmployeeRecord(date, onDutyTime, offDutyTime)
+}

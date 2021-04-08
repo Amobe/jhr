@@ -28,6 +28,10 @@ func NewTimeUnit(minutes int) TimeUnit {
 }
 
 func NewTimeUnitFromString(time string) (t TimeUnit, err error) {
+	if !isValidTime(time) {
+		err = fmt.Errorf("time is not match pattern")
+		return
+	}
 	units := strings.Split(time, ":")
 	if len(units) != 2 {
 		err = fmt.Errorf("time is not a valid string, len: %d != 2", len(units))
