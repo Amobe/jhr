@@ -1,7 +1,8 @@
-package xls
+package dp
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -20,6 +21,9 @@ const (
 )
 
 func NewTimeUnit(minutes int) TimeUnit {
+	if minutes < 0 {
+		minutes *= -1
+	}
 	return TimeUnit{
 		Hours:   minutes / 60,
 		Minutes: minutes % 60,
@@ -27,31 +31,27 @@ func NewTimeUnit(minutes int) TimeUnit {
 	}
 }
 
-func NewTimeUnitFromString(time string) (t TimeUnit, err error) {
+func NewTimeUnitFromString(time string) (t TimeUnit) {
 	if !isValidTime(time) {
-		err = fmt.Errorf("time is not match pattern")
+		t.Status = Invalid
 		return
 	}
 	units := strings.Split(time, ":")
-	if len(units) != 2 {
-		err = fmt.Errorf("time is not a valid string, len: %d != 2", len(units))
-		return
-	}
 	hours, err := strconv.ParseInt(units[0], 10, 64)
 	if err != nil {
-		err = fmt.Errorf("could not parse hours from string: %s not a value", units[0])
+		t.Status = Invalid
 		return
 	}
 	minutes, err := strconv.ParseInt(units[1], 10, 64)
 	if err != nil {
-		err = fmt.Errorf("could not parse minutes from string: %s not a value", units[1])
+		t.Status = Invalid
 		return
 	}
 	return TimeUnit{
 		Hours:   int(hours),
 		Minutes: int(minutes),
 		Status:  Valid,
-	}, nil
+	}
 }
 
 func NewInvalidTimeUnit() TimeUnit {
@@ -70,4 +70,9 @@ func (t TimeUnit) ToString() string {
 
 func (t TimeUnit) IsValid() bool {
 	return t.Status == Valid
+}
+
+func isValidTime(time string) bool {
+	reg := regexp.MustCompile("[0-9]+:[0-9]+")
+	return reg.Match([]byte(time))
 }
