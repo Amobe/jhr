@@ -1,6 +1,10 @@
 package dp
 
-import "github.com/amobe/jhr/server/dto"
+import (
+	"strings"
+
+	"github.com/amobe/jhr/server/dto"
+)
 
 type EmployeeSummary struct {
 	Name         string
@@ -12,12 +16,12 @@ type EmployeeSummary struct {
 
 func NewEmployeeSummary(data dto.ExcelSheet) (summary EmployeeSummary) {
 	if len(data.DataRows) < 1 {
-		summary.Name = data.Name
 		summary.Status = EmployeeSummaryStatusEmpty
 		return
 	}
 	summary.Department = getDataFromRow(data.DataRows[0], 0)
 	summary.EmployeeName = getDataFromRow(data.DataRows[0], 1)
+	summary.Name = GetValidName(summary.EmployeeName)
 	for _, row := range data.DataRows {
 		date := getDataFromRow(row, 2)
 		onDutyTime := getDataFromRow(row, 9)
@@ -42,4 +46,9 @@ func getDataFromRow(row []string, index int) string {
 		return row[index]
 	}
 	return ""
+}
+
+func GetValidName(ori string) string {
+	name := strings.ReplaceAll(ori, ":", "-")
+	return strings.ReplaceAll(name, "?", "")
 }

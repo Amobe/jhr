@@ -6,14 +6,16 @@ import (
 )
 
 func Handle(excelFile []dto.ExcelSheet) ([]dto.ExcelSheet, error) {
+	var out []dto.ExcelSheet
 	for _, employeeData := range excelFile {
 		summary := dp.NewEmployeeSummary(employeeData)
-		applySummary(employeeData, summary)
+		out = append(out, applySummary(employeeData, summary))
 	}
-	return excelFile, nil
+	return out, nil
 }
 
 func applySummary(sheet dto.ExcelSheet, summary dp.EmployeeSummary) dto.ExcelSheet {
+	sheet.Name = summary.Name
 	for i := range sheet.DataRows {
 		record := summary.Records[i]
 		if record.AttendanceStatus == dp.Abnormal {
