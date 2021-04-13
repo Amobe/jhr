@@ -7,11 +7,12 @@ import (
 )
 
 type EmployeeSummary struct {
-	Name         string
-	Department   string
-	EmployeeName string
-	Records      []EmployeeRecord
-	Status       EmployeeSummaryStatus
+	Name            string
+	Department      string
+	EmployeeName    string
+	Records         []EmployeeRecord
+	Status          EmployeeSummaryStatus
+	AbnormalRecords []EmployeeRecord
 }
 
 func NewEmployeeSummary(data dto.ExcelSheet) (summary EmployeeSummary) {
@@ -39,6 +40,16 @@ func (s EmployeeSummary) CalculateAttendance() EmployeeSummary {
 		s.Records[i].Duration = diff
 	}
 	return s
+}
+
+func (s EmployeeSummary) ListNonEmptyRecord() (nonEmptyRecords []EmployeeRecord) {
+	for _, r := range s.Records {
+		if r.Status == EmployeeRecordStatusEmpty {
+			continue
+		}
+		nonEmptyRecords = append(nonEmptyRecords, r)
+	}
+	return
 }
 
 func getDataFromRow(row []string, index int) string {

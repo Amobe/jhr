@@ -14,7 +14,7 @@ type EmployeeRecord struct {
 }
 
 func NewEmployeeRecord(date string, onDuty, offDuty string) (r EmployeeRecord) {
-	if !isValidDate(date) {
+	if !IsValidDate(date) {
 		r.Status = EmployeeRecordStatusEmpty
 		return
 	}
@@ -25,7 +25,7 @@ func NewEmployeeRecord(date string, onDuty, offDuty string) (r EmployeeRecord) {
 	}
 }
 
-func isValidDate(date string) bool {
+func IsValidDate(date string) bool {
 	reg := regexp.MustCompile("[0-9]+/[0-9]+")
 	return reg.Match([]byte(date))
 }
