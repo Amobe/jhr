@@ -1,4 +1,4 @@
-package controller
+package service
 
 import (
 	"strconv"
@@ -7,7 +7,7 @@ import (
 	"github.com/amobe/jhr/server/dto"
 )
 
-func Handle(excelFile []dto.ExcelSheet) ([]dto.ExcelSheet, error) {
+func SummaryExcel(excelFile []dto.ExcelSheet) ([]dto.ExcelSheet, error) {
 	var out []dto.ExcelSheet
 	var summaryList []dp.EmployeeSummary
 	for _, employeeData := range excelFile {
@@ -55,11 +55,13 @@ func insertData(row []string, index int, data string) []string {
 }
 
 func recordToRow(index int, departmentName string, employeeName string, r dp.EmployeeRecord) []string {
-	res := append([]string(nil), strconv.Itoa(index), departmentName, employeeName, r.Date, getDisplayTime(r.OnDuty), getDisplayTime(r.OffDuty), GetAttendanceStatus(r.AttendanceStatus), getDisplayTime(r.Duration))
+	res := append([]string(nil), strconv.Itoa(index), departmentName,
+		employeeName, r.Date, getDisplayTime(r.OnDuty), getDisplayTime(r.OffDuty),
+		getAttendanceStatus(r.AttendanceStatus), getDisplayTime(r.Duration))
 	return res
 }
 
-func GetAttendanceStatus(s dp.AttendanceStatus) string {
+func getAttendanceStatus(s dp.AttendanceStatus) string {
 	switch s {
 	case dp.Normal:
 		return "正常"

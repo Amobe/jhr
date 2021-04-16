@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/amobe/jhr/server/controller"
 	"github.com/amobe/jhr/server/infra"
+	"github.com/amobe/jhr/server/service"
 )
 
 func main() {
@@ -23,9 +23,9 @@ func analyzeExcel(inFilePath, outFilePath string) error {
 	if err != nil {
 		return fmt.Errorf("open excel file: %w", err)
 	}
-	out, err := controller.Handle(excel)
+	out, err := service.SummaryExcel(excel)
 	if err != nil {
-		return fmt.Errorf("handle excel file: %w", err)
+		return fmt.Errorf("summary excel file: %w", err)
 	}
 	if err := infra.WriteExcelFile(outFilePath, out); err != nil {
 		return fmt.Errorf("save excel file: %w", err)

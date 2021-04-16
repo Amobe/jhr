@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/amobe/jhr/server/controller"
 	"github.com/amobe/jhr/server/infra"
+	"github.com/amobe/jhr/server/service"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/webview/webview"
 )
@@ -76,9 +76,9 @@ func analyzeExcel(inStream io.Reader, outStream io.Writer) error {
 	if err != nil {
 		return fmt.Errorf("open excel stream: %w", err)
 	}
-	out, err := controller.Handle(excel)
+	out, err := service.SummaryExcel(excel)
 	if err != nil {
-		return fmt.Errorf("handle excel file: %w", err)
+		return fmt.Errorf("summary excel file: %w", err)
 	}
 	if err := infra.WriteExcelStream(outStream, out); err != nil {
 		return fmt.Errorf("save excel stream: %w", err)
