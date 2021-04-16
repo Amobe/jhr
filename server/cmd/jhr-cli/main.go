@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/amobe/jhr/server/controller"
@@ -9,18 +10,25 @@ import (
 
 func main() {
 	const (
-		inputFilePath  = "./MonRep200725_00000_00300.xlsx"
-		outputFilePath = "./MonRep200725_00000_00300-summary.xlsx"
+		inFilePath  = "./MonRep200725_00000_00300.xlsx"
+		outFilePath = "./MonRep200725_00000_00300-summary.xlsx"
 	)
-	excel, err := infra.OpenExcelFile(inputFilePath)
+	if err := analyzeExcel(inFilePath, outFilePath); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func analyzeExcel(inFilePath, outFilePath string) error {
+	excel, err := infra.OpenExcelFile(inFilePath)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("open excel file: %w", err)
 	}
 	out, err := controller.Handle(excel)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("handle excel file: %w", err)
 	}
-	if err := infra.WriteExcelFile(outputFilePath, out); err != nil {
-		log.Fatal(err)
+	if err := infra.WriteExcelFile(outFilePath, out); err != nil {
+		return fmt.Errorf("save excel file: %w", err)
 	}
+	return nil
 }
