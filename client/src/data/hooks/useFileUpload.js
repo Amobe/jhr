@@ -5,14 +5,55 @@ import JKModal from 'jk-modal';
 
 const useFileUpload = ({ setData }) => {
   const sendToConvert = ({
-    filePath,
+    file,
     doSuccess = () => {},
     doError = () => {},
   }) => {
-    console.log('send to api', filePath);
+    console.log('send to api', file);
 
-    if (!filePath) return doError();
-    doSuccess();
+    const data = new FormData();
+    data.append('file', file, file.name)
+
+    // let output = async() => {
+    //   let response = await fetch('http://localhost:8000/excel', {
+    //     method: 'post',
+    //     body: data,
+    //   });
+    //   let data = await response.blob()
+    //   console.log(data)
+    //   let objectUrl = URL.createObjectURL(data);
+    //   console.log(objectUrl)
+    //   window.open(objectUrl);
+    //   doSuccess()
+    // }
+    // output();
+
+
+    fetch('http://localhost:8000/excel', {
+      method: 'post',
+      body: data,
+    }).then(function(response) {
+      const resp = response.clone();
+      console.log(resp);
+      resp.blob().then(data => {
+        var reader = new FileReader();
+        reader.readAsDataURL(data);
+        reader.onloadend = function() {
+          var base64data = reader.result;
+          console.log(base64data);
+          var a = document.createElement("a");
+          a.href = base64data;
+          a.download = "hello.xlsx";
+          a.click();
+          // window.open(base64data)
+          doSuccess();
+      }
+      });
+    }).catch(function(e) {
+      console.log(e);
+      doError()
+    });
+
   };
 
   /**
@@ -33,6 +74,7 @@ const useFileUpload = ({ setData }) => {
    * analyze file's type
    */
   const readFileHandler = file => {
+    console.log('read file handler')
     // 不是圖片的檔案類型
     if (!file.type.includes('image')) {
       fileProcess(file);
@@ -43,10 +85,8 @@ const useFileUpload = ({ setData }) => {
 
   const fileProcess = file => {
     setData(<img width="30" height="30" src={LoadingIcon} alt="" />);
-
-    // 將檔案路徑傳給後端，後端去解析
     sendToConvert({
-      filePath: file.path,
+      file: file,
       doSuccess: params => {
         callModalPopup({ type: 'sendSuccess', ...params });
       },

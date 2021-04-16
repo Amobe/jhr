@@ -19,6 +19,7 @@ const DropArea = () => {
   const { readFileHandler } = useFileUpload({ setData });
 
   const onDrop = e => {
+    console.log('on drop');
     e.preventDefault();
 
     const {

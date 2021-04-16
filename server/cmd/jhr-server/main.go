@@ -66,6 +66,7 @@ func excelHandler(w http.ResponseWriter, r *http.Request) error {
 		if err := analyzeExcel(file, w); err != nil {
 			return fmt.Errorf("analyze excel: %w", err)
 		}
+		w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 	}
 
 	return nil
