@@ -68,7 +68,7 @@ const DropArea = () => {
         {error && <ErrorText>{error}</ErrorText>}
         {data && (
           <PanelRight>
-            <Button onClick={() => removeFile()}>Stop to convert</Button>
+            <Button onClick={() => removeFile()}>Stop celebrate</Button>
           </PanelRight>
         )}
       </ControlPanel>
