@@ -20,6 +20,7 @@ const Modal = ({
   customDesc = () => {},
   customConfirmText,
   customCancelText,
+  customCelecrateImg,
   closeModal,
   onConfirmClick = () => {},
   onCancelClick = () => {},
@@ -27,7 +28,7 @@ const Modal = ({
   const pool = dialogMap;
   const data = type && pool[type] ? pool[type] : {};
 
-  const { image, title, desc, hint, confirmText, cancelText, htmlTitle } = data;
+  const { image, title, desc, hint, confirmText, cancelText, celecrateImg, htmlTitle } = data;
 
   const handleConfirmOnClick = () => {
     onConfirmClick();
@@ -40,6 +41,7 @@ const Modal = ({
   };
 
   const secondBtnShow = customCancelText || cancelText;
+  const celebrateImgShow = customCelecrateImg || celecrateImg
 
   return (
     <Container>
@@ -50,6 +52,11 @@ const Modal = ({
         </Title>
         <Description>{customDesc() || desc}</Description>
         {hint && <Hint>{hint}</Hint>}
+        {
+          celebrateImgShow && (
+            <img width="240" height="240" src={celecrateImg} alt="" />
+          )
+        }
         <ButtonGroup>
           <Button primary onClick={handleConfirmOnClick}>
             {customConfirmText || confirmText}

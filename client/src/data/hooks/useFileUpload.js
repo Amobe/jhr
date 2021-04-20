@@ -5,14 +5,25 @@ import JKModal from 'jk-modal';
 
 const useFileUpload = ({ setData }) => {
   const sendToConvert = ({
-    filePath,
+    file,
     doSuccess = () => {},
     doError = () => {},
   }) => {
-    console.log('send to api', filePath);
+    console.log('send to api', file);
 
-    if (!filePath) return doError();
-    doSuccess();
+    const data = new FormData();
+    data.append('file', file, file.name)
+
+    fetch('http://localhost:8000/excel', {
+      method: 'post',
+      body: data,
+    }).then(function(response) {
+      doSuccess();
+    }).catch(function(e) {
+      console.log(e);
+      doError()
+    });
+
   };
 
   /**
@@ -33,35 +44,22 @@ const useFileUpload = ({ setData }) => {
    * analyze file's type
    */
   const readFileHandler = file => {
-    // 不是圖片的檔案類型
-    if (!file.type.includes('image')) {
-      fileProcess(file);
-    } else {
-      imageProcess(file);
-    }
+    console.log('read file handler')
+    fileProcess(file);
   };
 
   const fileProcess = file => {
     setData(<img width="30" height="30" src={LoadingIcon} alt="" />);
-
-    // 將檔案路徑傳給後端，後端去解析
     sendToConvert({
-      filePath: file.path,
+      file: file,
       doSuccess: params => {
         callModalPopup({ type: 'sendSuccess', ...params });
+        setData(false);
       },
       doError: params => {
         callModalPopup({ type: 'sendError', ...params });
       },
     });
-  };
-
-  const imageProcess = file => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = loadEvt => {
-      setData(<img src={loadEvt.target.result} alt="" />);
-    };
   };
 
   return { readFileHandler };
